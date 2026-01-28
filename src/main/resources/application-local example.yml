@@ -1,0 +1,22 @@
+# Local development configuration
+# DO NOT COMMIT - Add to .gitignore
+
+spring:
+  ai:
+    openai:
+      api-key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+    anthropic:
+      api-key: "xxxxxxxxxxxxx"
+    azure:
+      openai:
+        endpoint: https://xxxxxxxxxxxxx.openai.azure.com/
+        api-key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        chat:
+          options:
+            deployment-name: gpt-4.1
+
+azure:
+  document-intelligence:
+    endpoint: https://xxxxxxxxxxxxx.cognitiveservices.azure.com/
+    key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
