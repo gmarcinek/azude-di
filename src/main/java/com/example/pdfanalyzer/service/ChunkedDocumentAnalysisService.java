@@ -162,9 +162,9 @@ public class ChunkedDocumentAnalysisService {
             Integer colIdx = cell.getColumnIndex();
             String content = cell.getContent() != null ? cell.getContent() : "";
 
-            if (rowIdx != null && colIdx != null && 
-                rowIdx >= 0 && rowIdx < rowCount && 
-                colIdx >= 0 && colIdx < columnCount) {
+            if (rowIdx != null && colIdx != null &&
+                    rowIdx >= 0 && rowIdx < rowCount &&
+                    colIdx >= 0 && colIdx < columnCount) {
                 tableData[rowIdx][colIdx] = content;
             }
         });
