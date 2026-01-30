@@ -48,3 +48,7 @@ application-local.yml
 *.pdf
 *_analysis.json
 logs/
+.env
+uploads/*.pdf
+uploads/*.json
+uploads/*.md

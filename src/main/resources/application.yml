@@ -1,6 +1,12 @@
 spring:
   profiles:
-    active: local
+    active: local,web
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+server:
+  port: 8080
   ai:
     azure:
       openai:
@@ -21,7 +27,8 @@ app:
   input:
     pdf-path: ./data/owu.pdf
   chunking:
-    strategy: semantic
+    strategy: page-based
+    pages-per-chunk: 2
     max-chunk-size: 1000
     overlap: 100
 

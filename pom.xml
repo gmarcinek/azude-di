@@ -41,6 +41,12 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- Spring Web for REST endpoints -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!-- Spring AI -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
@@ -66,6 +72,13 @@
             <version>1.0.0-beta.3</version>
         </dependency>
 
+        <!-- PDF Processing -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
         <!-- Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -74,6 +87,10 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
 
         <!-- Logging -->

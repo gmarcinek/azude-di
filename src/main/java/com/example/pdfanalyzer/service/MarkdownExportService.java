@@ -18,6 +18,23 @@ public class MarkdownExportService {
     public void exportToMarkdown(AnalysisResult result, Path outputPath) {
         log.info("Exporting to Markdown: {}", outputPath);
 
+        String markdown = buildMarkdown(result);
+
+        // Write to file
+        try {
+            Files.writeString(outputPath, markdown);
+            log.info("Markdown exported successfully: {}", outputPath);
+        } catch (IOException e) {
+            log.error("Error writing Markdown file: {}", outputPath, e);
+            throw new RuntimeException("Failed to export Markdown: " + e.getMessage(), e);
+        }
+    }
+
+    public String exportToMarkdownString(AnalysisResult result) {
+        return buildMarkdown(result);
+    }
+
+    private String buildMarkdown(AnalysisResult result) {
         StringBuilder md = new StringBuilder();
 
         // Header
@@ -89,14 +106,7 @@ public class MarkdownExportService {
             }
         }
 
-        // Write to file
-        try {
-            Files.writeString(outputPath, md.toString());
-            log.info("Markdown exported successfully: {}", outputPath);
-        } catch (IOException e) {
-            log.error("Error writing Markdown file: {}", outputPath, e);
-            throw new RuntimeException("Failed to export Markdown: " + e.getMessage(), e);
-        }
+        return md.toString();
     }
 
     private String formatSectionHeader(String role) {

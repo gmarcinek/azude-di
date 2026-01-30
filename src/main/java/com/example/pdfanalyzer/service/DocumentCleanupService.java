@@ -1,5 +1,6 @@
 package com.example.pdfanalyzer.service;
 
+import com.example.pdfanalyzer.config.ChunkingProperties;
 import com.example.pdfanalyzer.model.EnrichedSection;
 import com.example.pdfanalyzer.model.Section;
 import com.example.pdfanalyzer.model.SectionClassification;
@@ -20,17 +21,17 @@ import java.util.stream.Collectors;
 public class DocumentCleanupService {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentCleanupService.class);
-    private static final int CHUNK_SIZE = 2000;
-    private static final int OVERLAP_SIZE = 300;
-
     private final ChatClient openAiClient;
     private final ObjectMapper objectMapper;
+    private final ChunkingProperties chunkingProperties;
 
     public DocumentCleanupService(
             @Qualifier("openai") ChatClient openAiClient,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            ChunkingProperties chunkingProperties) {
         this.openAiClient = openAiClient;
         this.objectMapper = objectMapper;
+        this.chunkingProperties = chunkingProperties;
     }
 
     public List<EnrichedSection> classifySections(List<Section> sections) {
@@ -63,6 +64,9 @@ public class DocumentCleanupService {
     }
 
     private List<SectionChunk> chunkSections(List<Section> sections) {
+        int chunkSize = Math.max(1, chunkingProperties.maxChunkSize());
+        int overlapSize = Math.max(0, chunkingProperties.overlap());
+
         List<SectionChunk> chunks = new ArrayList<>();
         List<IndexedSection> currentChunk = new ArrayList<>();
         int currentSize = 0;
@@ -71,13 +75,27 @@ public class DocumentCleanupService {
             Section section = sections.get(i);
             int sectionSize = section.content().length();
 
-            if (currentSize + sectionSize > CHUNK_SIZE && !currentChunk.isEmpty()) {
+            if (currentSize + sectionSize > chunkSize && !currentChunk.isEmpty()) {
                 chunks.add(new SectionChunk(new ArrayList<>(currentChunk)));
 
-                // Keep overlap
-                int overlapStart = Math.max(0, currentChunk.size() - 3);
-                currentChunk = new ArrayList<>(currentChunk.subList(overlapStart, currentChunk.size()));
-                currentSize = currentChunk.stream().mapToInt(s -> s.section().content().length()).sum();
+                // Keep overlap by char size
+                if (overlapSize > 0) {
+                    int overlapChars = 0;
+                    int overlapStart = currentChunk.size();
+                    for (int j = currentChunk.size() - 1; j >= 0; j--) {
+                        int sectionChars = currentChunk.get(j).section().content().length();
+                        if (overlapChars + sectionChars > overlapSize) {
+                            break;
+                        }
+                        overlapChars += sectionChars;
+                        overlapStart = j;
+                    }
+                    currentChunk = new ArrayList<>(currentChunk.subList(overlapStart, currentChunk.size()));
+                    currentSize = currentChunk.stream().mapToInt(s -> s.section().content().length()).sum();
+                } else {
+                    currentChunk = new ArrayList<>();
+                    currentSize = 0;
+                }
             }
 
             currentChunk.add(new IndexedSection(i, section));
